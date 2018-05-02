@@ -1,0 +1,9 @@
+{
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "tslint.enable": true,
+    "tslint.autoFixOnSave": true,
+    "editor.autoIndent": true,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false
+}
