@@ -3,8 +3,8 @@ import * as koa from 'koa';
 import * as koaBody from 'koa-bodyparser';
 import * as koaLogger from 'koa-logger';
 import * as koaRouter from 'koa-router';
-import { Schema } from './app';
 import { APP_NAME, APP_PORT } from './config';
+import { Schema } from './schema';
 import { Logger } from './utils';
 
 const app = new koa();

@@ -1,15 +1,7 @@
-import { makeExecutableSchema } from 'graphql-tools';
+import { GraphQLSchema } from 'graphql';
+import { mergeSchemas } from 'graphql-tools';
+import * as schemas from './app';
 
-const RootQuery = `
-	type RootQuery {
-
-	}
-`;
-
-const RootMutation = `
-	type RootMutation {
-
-	}
-`;
-
-export const Schema = makeExecutableSchema(RootQuery);
+export const Schema = mergeSchemas({
+	schemas: Object.values(schemas).filter(s => s instanceof GraphQLSchema),
+});

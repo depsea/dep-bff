@@ -1,9 +1,9 @@
 /**
  * user schema
  */
-import { makeExecutableSchema } from 'graphql-tools';
+import { IResolvers, ITypedef, ITypeDefinitions, makeExecutableSchema } from 'graphql-tools';
 
-export const UserTypeDef = `
+export const UserTypeDef: ITypedef = `
 	type User {
 		id: ID!
 		username: String
@@ -11,15 +11,24 @@ export const UserTypeDef = `
 	}
 `;
 
-const UserQueryTypeDef = `
+const query: ITypedef = `
 	type Query {
 		users(start: Int): [User]
 	}
 `;
 
-export const UserSchema = makeExecutableSchema({
+const resolvers: IResolvers = {
+	Query: {
+		users: (parent, { start }) => {
+			return [];
+		},
+	},
+};
+
+export default makeExecutableSchema({
 	typeDefs: `
 		${UserTypeDef}
-		${UserQueryTypeDef}
+		${query}
 	`,
+	resolvers,
 });

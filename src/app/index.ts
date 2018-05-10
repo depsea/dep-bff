@@ -1,7 +1,3 @@
-import { mergeSchemas } from 'graphql-tools';
-import { ArticleSchema } from './article';
-import { UserSchema } from './user';
-
-export const Schema = mergeSchemas({
-	schemas: [ArticleSchema, UserSchema],
-});
+export { default as ArticleSchema } from './article';
+export { default as UserSchema } from './user';
+export { default as CategorySchema } from './category';
