@@ -16,7 +16,7 @@
 		"strict": true,
 		"noImplicitAny": true,
 		"sourceMap": true,
-		"skipLibCheck": true
+		"skipLibCheck": true,
 	},
 	"exclude": [
 		"node_modules",

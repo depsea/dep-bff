@@ -1,12 +1,5 @@
 import { IResolvers, ITypedef, makeExecutableSchema } from 'graphql-tools';
-
-const mock = [
-	{ id: 1, title: 'test1', desc: 'demo1', body: 'body1' },
-	{ id: 2, title: 'test2', desc: 'demo2', body: 'body2' },
-	{ id: 3, title: 'test3', desc: 'demo3', body: 'body3' },
-	{ id: 4, title: 'test4', desc: 'demo4', body: 'body4' },
-	{ id: 5, title: 'test5', desc: 'demo5', body: 'body5' },
-];
+import { ArticleAPI } from '../sdk';
 
 export const ArticleTypeDef: ITypedef = `
 	type Article {
@@ -19,18 +12,34 @@ export const ArticleTypeDef: ITypedef = `
 
 const query: ITypedef = `
 	type Query {
-		articles(start: Int): [Article]
+		articles(limit: Int, skip: Int): [Article]
 		articleById(id: ID): Article
+	}
+`;
+
+const mutations: ITypedef = `
+	type Mutation {
+		createArticle(newData: ID): Article
 	}
 `;
 
 const resolvers: IResolvers = {
 	Query: {
-		articles(parent, { start }) {
-			return mock;
+		async articles(parent, args) {
+			const { limit, skip } = args;
+			const result = await ArticleAPI.getList({ limit, skip });
+			return result;
 		},
-		articleById(parent, { id }) {
-			return mock.filter(i => i.id === +id)[0];
+		async articleById(parent, args) {
+			const { id } = args;
+			const result = await ArticleAPI.getDetail(id);
+			return result;
+		},
+	},
+
+	Mutation: {
+		createArticle(parent, { newData }) {
+			return newData;
 		},
 	},
 };
@@ -39,6 +48,7 @@ export default makeExecutableSchema({
 	typeDefs: `
 		${ArticleTypeDef}
 		${query}
+		${mutations}
 	`,
 	resolvers,
 });
