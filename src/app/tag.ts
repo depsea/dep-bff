@@ -1,38 +1,71 @@
-/**
- * tag
- */
 import { IResolvers, ITypedef, makeExecutableSchema } from 'graphql-tools';
-
-const mock = [
-	{ id: 1, name: '1', desc: '1' },
-	{ id: 2, name: '2', desc: '2' },
-	{ id: 3, name: '3', desc: '3' },
-	{ id: 4, name: '4', desc: '4' },
-	{ id: 5, name: '5', desc: '5' },
-];
+import { TagAPI } from '../sdk';
 
 export const TagTypeDef: ITypedef = `
+	# 标签
 	type Tag {
+		# 标签id
 		id: ID!
+
+		# 标签名称
 		name: String
+
+		# 标签描述
 		desc: String
+
+		# 创建时间
+		createTime: Int
+
+		# 更新时间
+		updateTime: Int
 	}
 `;
 
 const query: ITypedef = `
 	type Query {
+		# 获取标签列表
 		tags(start: Int): [Tag]
+
+		# 根据id获取标签详情
 		tagById(id: ID): Tag
+	}
+`;
+
+const mutation: ITypedef = `
+	type Mutation {
+		# 创建标签
+		createTag(newData: String): Tag
+
+		# 更新标签
+		updateTag(id: ID, newData: String): Tag
+
+		# 删除标签
+		deleteTag(id: ID): Tag
 	}
 `;
 
 const resolvers: IResolvers = {
 	Query: {
-		tags: (parent, { start }) => {
-			return mock;
+		async tags(parent, { skip, limit }) {
+			return await TagAPI.getList({ skip, limit });
 		},
-		tagById: (parent, { id }) => {
-			return mock.filter(i => i.id === +id)[0];
+
+		async tagById(parent, { id }) {
+			return await TagAPI.getDetail(id);
+		},
+	},
+
+	Mutation: {
+		async createTag(parent, { newData }) {
+			return await TagAPI.create(newData);
+		},
+
+		async updateTag(parent, { id, newData }) {
+			return await TagAPI.update(id, newData);
+		},
+
+		async deleteTag(parent, { id }) {
+			return await TagAPI.delete(id);
 		},
 	},
 };
@@ -41,6 +74,7 @@ export default makeExecutableSchema({
 	typeDefs: `
 		${TagTypeDef}
 		${query}
+		${mutation}
 	`,
 	resolvers,
 });

@@ -1,38 +1,71 @@
-/**
- * category
- */
 import { IResolvers, ITypedef, makeExecutableSchema } from 'graphql-tools';
-
-const mock = [
-	{ id: 1, name: '11', desc: '111' },
-	{ id: 2, name: '22', desc: '222' },
-	{ id: 3, name: '33', desc: '333' },
-	{ id: 4, name: '4', desc: '4' },
-];
+import { CategoryAPI } from '../sdk';
 
 export const CategoryTypeDef: ITypedef = `
+	# 类别
 	type Category {
+		# 类别id
 		id: ID!
+
+		# 类别名称
 		name: String
+
+		# 类别描述
 		desc: String
+
+		# 创建时间
+		createTime: Int
+
+		# 更新时间
+		updateTime: Int
 	}
 `;
 
 const query: ITypedef = `
 	type Query {
-		categories(start: Int): [Category]
+		# 获取类别列表
+		categories(skip: Int = 0, limit: Int = 20): [Category]
+
+		# 根据id查询类别详情
 		categoryById(id: ID): Category
+	}
+`;
+
+const mutation: ITypedef = `
+	type Mutation {
+		# 添加类别
+		createCategory(newData: ID): Category
+
+		# 更新类别
+		updateCategory(id: ID, newData: String): Category
+
+		# 删除类别
+		deleteCategory(id: ID): Category
 	}
 `;
 
 const resolvers: IResolvers = {
 	Query: {
-		categories: (parent, { start }) => {
-			return mock;
+		async categories(parent, { skip, limit }) {
+			return await CategoryAPI.getList({ skip, limit });
 		},
 
-		categoryById: (parent, { id }) => {
-			return mock.filter(i => i.id === +id)[0];
+		async categoryById(parent, { id }) {
+			return await CategoryAPI.getDetail(id);
+		},
+	},
+
+	Mutation: {
+		async createCategory(parent, { newData }) {
+			return await CategoryAPI.create(newData);
+		},
+
+		async updateCategory(parent, { id, newData }) {
+			return await CategoryAPI.update(id, newData);
+		},
+
+		async deleteCategory(parent, { id }) {
+			return await CategoryAPI.delete(id);
 		},
 	},
 };
@@ -41,6 +74,7 @@ export default makeExecutableSchema({
 	typeDefs: `
 		${CategoryTypeDef}
 		${query}
+		${mutation}
 	`,
 	resolvers,
 });
