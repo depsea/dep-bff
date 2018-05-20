@@ -1,11 +1,12 @@
 import { IResolvers, ITypedef, makeExecutableSchema } from 'graphql-tools';
 import { TagAPI } from '../sdk';
+import { CommonTypeDef } from './common';
 
 export const TagTypeDef: ITypedef = `
 	# 标签
 	type Tag {
 		# 标签id
-		id: ID!
+		id: ID
 
 		# 标签名称
 		name: String
@@ -14,33 +15,33 @@ export const TagTypeDef: ITypedef = `
 		desc: String
 
 		# 创建时间
-		createTime: Int
+		createTime: Timestamp
 
 		# 更新时间
-		updateTime: Int
+		updateTime: Timestamp
 	}
 `;
 
 const query: ITypedef = `
 	type Query {
 		# 获取标签列表
-		tags(start: Int): [Tag]
+		tags(skip: Int = 0, limit: Int = 20): [Tag]
 
 		# 根据id获取标签详情
-		tagById(id: ID): Tag
+		tagById(id: ID!): Tag
 	}
 `;
 
 const mutation: ITypedef = `
 	type Mutation {
 		# 创建标签
-		createTag(newData: String): Tag
+		createTag(newData: String!): Tag
 
 		# 更新标签
-		updateTag(id: ID, newData: String): Tag
+		updateTag(id: ID!, newData: String!): Tag
 
 		# 删除标签
-		deleteTag(id: ID): Tag
+		deleteTag(id: ID!): Tag
 	}
 `;
 
@@ -72,6 +73,7 @@ const resolvers: IResolvers = {
 
 export default makeExecutableSchema({
 	typeDefs: `
+		${CommonTypeDef}
 		${TagTypeDef}
 		${query}
 		${mutation}

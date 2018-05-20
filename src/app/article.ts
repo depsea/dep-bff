@@ -1,5 +1,6 @@
 import { IResolvers, ITypedef, makeExecutableSchema } from 'graphql-tools';
 import { ArticleAPI } from '../sdk';
+import { CommonTypeDef } from './common';
 import { UserTypeDef } from './user';
 
 export const ArticleTypeDef: ITypedef = `
@@ -12,7 +13,7 @@ export const ArticleTypeDef: ITypedef = `
 
 	type Article {
 		# 文章id
-		id: ID!
+		id: ID
 
 		# 文章标题
 		title: String
@@ -27,36 +28,36 @@ export const ArticleTypeDef: ITypedef = `
 		createUser: User
 
 		# 创建时间
-		createTime: Int
+		createTime: Timestamp
 
 		# 更新时间
-		updateTime: Int
+		updateTime: Timestamp
 
 		# 状态
-		static: ArticleStatus
+		status: ArticleStatus
 	}
 `;
 
 const query: ITypedef = `
 	type Query {
 		# 获取文章列表
-		articles(limit: Int, skip: Int): [Article]
+		articles(skip: Int = 0, limit: Int = 20): [Article]
 
 		# 通过id获取文章详情
-		articleById(id: ID): Article
+		articleById(id: ID!): Article
 	}
 `;
 
 const mutations: ITypedef = `
 	type Mutation {
 		# 创建文章
-		createArticle(newData: ID): Article
+		createArticle(newData: String!): Article
 
 		# 更新文章
-		updateArticle(id: ID, newData: String): Article
+		updateArticle(id: ID!, newData: String!): Article
 
 		# 删除文章
-		deleteArticle(id: ID): Article
+		deleteArticle(id: ID!): Article
 	}
 `;
 
@@ -94,6 +95,7 @@ const resolvers: IResolvers = {
 
 export default makeExecutableSchema({
 	typeDefs: `
+		${CommonTypeDef}
 		${UserTypeDef}
 		${ArticleTypeDef}
 		${query}
